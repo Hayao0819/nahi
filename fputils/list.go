@@ -5,6 +5,9 @@ import (
 	"path/filepath"
 )
 
+
+
+
 func RecursionFileList(dir string) (*[]string, error) {
 	files := []string{}
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
@@ -39,7 +42,7 @@ func RecursionDirList(dir string) (*[]string, error) {
 	return &dirs, nil
 }
 
-func FileList(dir string) (*[]string, error) {
+func Ls(dir string) (*[]string, error) {
 	files, err := filepath.Glob(dir)
 	if err != nil {
 		return nil, err
