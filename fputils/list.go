@@ -38,3 +38,11 @@ func RecursionDirList(dir string) (*[]string, error) {
 	}
 	return &dirs, nil
 }
+
+func FileList(dir string) (*[]string, error) {
+	files, err := filepath.Glob(dir)
+	if err != nil {
+		return nil, err
+	}
+	return &files, nil
+}
