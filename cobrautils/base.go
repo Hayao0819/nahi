@@ -13,6 +13,7 @@ func (c *cmd) DisableCompletion() *cmd {
 	return c
 }
 
+// Todo: 正しく実装する
 func (c *cmd) SetUsageLabel(label string) *cmd {
 	print((*cobra.Command)(c).UsageTemplate())
 	(*cobra.Command)(c).SetUsageTemplate(label)
