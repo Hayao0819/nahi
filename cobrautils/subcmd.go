@@ -2,19 +2,33 @@ package cobrautils
 
 import "github.com/spf13/cobra"
 
-var subCmds []*cobra.Command
+type Registory []*cobra.Command
 
 // サブコマンドを追加する
-func AddSubCmds(cmds ...*cobra.Command) {
-	subCmds = append(subCmds, cmds...)
+func (r *Registory) RegisterSubCmd(cmds ...*cobra.Command) {
+	*r = append(*r, cmds...)
 }
 
 // サブコマンドの一覧を取得する
-func GetSubCmds() []*cobra.Command {
-	return subCmds
+func (r *Registory) GetSubCmds() []*cobra.Command {
+	return *r
 }
 
 // サブコマンドをRootに追加する
-func AddSubCmdsToRoot(root *cobra.Command) {
-	root.AddCommand(subCmds...)
+func (r *Registory) BindSubCmds(root *cobra.Command) {
+	root.AddCommand((*r)...)
+}
+
+var defaultRegistory Registory
+
+func RegisterSubCmd(cmds ...*cobra.Command) {
+	defaultRegistory.RegisterSubCmd(cmds...)
+}
+
+func GetSubCmds() []*cobra.Command {
+	return defaultRegistory.GetSubCmds()
+}
+
+func BindSubCmds(root *cobra.Command) {
+	defaultRegistory.BindSubCmds(root)
 }
