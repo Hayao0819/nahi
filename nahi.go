@@ -3,11 +3,11 @@ package nahi
 import (
 	"strings"
 
-	"github.com/Hayao0819/nahi/osutils"
+	"github.com/Hayao0819/nahi/futils"
 )
 
 func LoadEnvFile(path string) (map[string]string, error) {
-	lines, err := osutils.ReadFileLine(path)
+	lines, err := futils.ReadFileLine(path)
 	if err != nil {
 		return nil, err
 	}

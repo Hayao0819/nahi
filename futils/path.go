@@ -1,4 +1,4 @@
-package fputils
+package futils
 
 import (
 	"os"
