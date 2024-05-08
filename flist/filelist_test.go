@@ -1,13 +1,13 @@
-package filelist_test
+package flist_test
 
 import (
 	"testing"
 
-	"github.com/Hayao0819/nahi/filelist"
+	"github.com/Hayao0819/nahi/flist"
 )
 
 func TestFileList(t *testing.T) {
-	got, err := filelist.FileList(".")
+	got, err := flist.Get(".")
 	if err != nil {
 		t.Errorf("Error: %v", err)
 	}
