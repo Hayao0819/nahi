@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 )
 
@@ -14,6 +15,7 @@ type fileListOptions = struct {
 	fileOnly bool
 	dirOnly  bool
 	extOnly  string
+	extsOnly []string
 }
 
 func WithMaxDepth(depth int) func(*fileListOptions) {
@@ -31,6 +33,12 @@ func WithMinDepth(depth int) func(*fileListOptions) {
 func WithExtOnly(ext string) func(*fileListOptions) {
 	return func(opt *fileListOptions) {
 		opt.extOnly = ext
+	}
+}
+
+func WithExtsOnly(exts []string) func(*fileListOptions) {
+	return func(opt *fileListOptions) {
+		opt.extsOnly = exts
 	}
 }
 
@@ -52,6 +60,8 @@ func Get(dir string, opts ...func(*fileListOptions)) (*[]string, error) {
 		minDepth: 0,
 		fileOnly: false,
 		dirOnly:  false,
+		extOnly:  "",
+		extsOnly: []string{},
 	}
 
 	for _, o := range opts {
@@ -81,10 +91,10 @@ func Get(dir string, opts ...func(*fileListOptions)) (*[]string, error) {
 		}
 
 		if opt.extOnly != "" {
-			if filepath.Ext(path) != opt.extOnly {
+			ext := filepath.Ext(path)
+			if ext != opt.extOnly && !slices.Contains(opt.extsOnly, ext) {
 				return nil
 			}
-
 		}
 
 		rtn = append(rtn, path)
