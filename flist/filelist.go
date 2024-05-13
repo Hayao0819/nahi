@@ -1,7 +1,6 @@
 package flist
 
 import (
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -98,7 +97,6 @@ func Get(dir string, opts ...func(*fileListOptions)) (*[]string, error) {
 		}
 
 		rtn = append(rtn, path)
-		fmt.Println(path, depth)
 		return nil
 	})
 
