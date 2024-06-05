@@ -14,6 +14,7 @@ type fileListOptions = struct {
 	fileOnly bool
 	dirOnly  bool
 	extOnly  string
+	filename bool
 	extsOnly []string
 }
 
@@ -44,6 +45,12 @@ func WithExtsOnly(exts []string) func(*fileListOptions) {
 func WithFileOnly() func(*fileListOptions) {
 	return func(opt *fileListOptions) {
 		opt.fileOnly = true
+	}
+}
+
+func WithFileName() func(*fileListOptions) {
+	return func(opt *fileListOptions) {
+		opt.filename = true
 	}
 }
 
@@ -96,7 +103,11 @@ func Get(dir string, opts ...func(*fileListOptions)) (*[]string, error) {
 			}
 		}
 
-		rtn = append(rtn, path)
+		if opt.filename {
+			rtn = append(rtn, filepath.Base(path))
+		} else {
+			rtn = append(rtn, path)
+		}
 		return nil
 	})
 
