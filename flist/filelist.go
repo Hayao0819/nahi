@@ -1,6 +1,7 @@
 package flist
 
 import (
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -8,7 +9,7 @@ import (
 	"strings"
 )
 
-type fileListOptions = struct {
+type options = struct {
 	maxDepth int
 	minDepth int
 	fileOnly bool
@@ -16,52 +17,61 @@ type fileListOptions = struct {
 	extOnly  string
 	filename bool
 	extsOnly []string
+	relpath  bool
 }
 
-func WithMaxDepth(depth int) func(*fileListOptions) {
-	return func(opt *fileListOptions) {
+type Option func(*options)
+
+func WithMaxDepth(depth int) Option {
+	return func(opt *options) {
 		opt.maxDepth = depth
 	}
 }
 
-func WithMinDepth(depth int) func(*fileListOptions) {
-	return func(opt *fileListOptions) {
+func WithMinDepth(depth int) Option {
+	return func(opt *options) {
 		opt.minDepth = depth
 	}
 }
 
-func WithExtOnly(ext string) func(*fileListOptions) {
-	return func(opt *fileListOptions) {
+func WithExtOnly(ext string) Option {
+	return func(opt *options) {
 		opt.extOnly = ext
 	}
 }
 
-func WithExtsOnly(exts []string) func(*fileListOptions) {
-	return func(opt *fileListOptions) {
+func WithExtsOnly(exts []string) Option {
+	return func(opt *options) {
 		opt.extsOnly = exts
 	}
 }
 
-func WithFileOnly() func(*fileListOptions) {
-	return func(opt *fileListOptions) {
+func WithFileOnly() func(*options) {
+	return func(opt *options) {
 		opt.fileOnly = true
 	}
 }
 
-func WithFileName() func(*fileListOptions) {
-	return func(opt *fileListOptions) {
+func WithFileName() Option {
+	return func(opt *options) {
 		opt.filename = true
 	}
 }
 
-func WithDirOnly() func(*fileListOptions) {
-	return func(opt *fileListOptions) {
+func WithDirOnly() Option {
+	return func(opt *options) {
 		opt.dirOnly = true
 	}
 }
 
-func Get(dir string, opts ...func(*fileListOptions)) (*[]string, error) {
-	opt := fileListOptions{
+func WithRelPath() Option {
+	return func(opt *options) {
+		opt.relpath = true
+	}
+}
+
+func Get(dir string, opts ...Option) (*[]string, error) {
+	opt := options{
 		maxDepth: -1,
 		minDepth: 0,
 		fileOnly: false,
@@ -81,21 +91,30 @@ func Get(dir string, opts ...func(*fileListOptions)) (*[]string, error) {
 			return err
 		}
 
+		// フィルター
+
+		// ファイルのみでディレクトリは除外
 		if opt.fileOnly && d.IsDir() {
 			return nil
 		}
+
+		// ディレクトリのみでファイルは除外
 		if opt.dirOnly && !d.IsDir() {
 			return nil
 		}
 
-		depth := len(strings.Split(path, string(os.PathSeparator))) - 1
-		if !(opt.maxDepth < 0) && depth > opt.maxDepth {
+		// 階層の深さ
+		depthBasis := len(strings.Split(dir, string(os.PathSeparator)))
+		depth := len(strings.Split(path, string(os.PathSeparator)))
+		depthDiff := depth - depthBasis
+		if !(opt.maxDepth < 0) && depthDiff > opt.maxDepth {
 			return nil
 		}
-		if depth < opt.minDepth {
+		if depthDiff < opt.minDepth {
 			return nil
 		}
 
+		// 拡張子
 		if opt.extOnly != "" {
 			ext := filepath.Ext(path)
 			if ext != opt.extOnly && !slices.Contains(opt.extsOnly, ext) {
@@ -103,11 +122,17 @@ func Get(dir string, opts ...func(*fileListOptions)) (*[]string, error) {
 			}
 		}
 
-		if opt.filename {
-			rtn = append(rtn, filepath.Base(path))
-		} else {
-			rtn = append(rtn, path)
+		// 出力形式
+		rtnPath := path
+		if opt.relpath {
+			rtnPath = strings.Replace(rtnPath, dir, "", 1)
 		}
+		if opt.filename {
+			rtnPath = filepath.Base(rtnPath)
+		}
+
+		fmt.Println(depthDiff, path)
+		rtn = append(rtn, rtnPath)
 		return nil
 	})
 
