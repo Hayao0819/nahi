@@ -1,7 +1,6 @@
 package flist
 
 import (
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -30,6 +29,13 @@ func WithMaxDepth(depth int) Option {
 
 func WithMinDepth(depth int) Option {
 	return func(opt *options) {
+		opt.minDepth = depth
+	}
+}
+
+func WithExactDepth(depth int) Option {
+	return func(opt *options) {
+		opt.maxDepth = depth
 		opt.minDepth = depth
 	}
 }
@@ -131,7 +137,6 @@ func Get(dir string, opts ...Option) (*[]string, error) {
 			rtnPath = filepath.Base(rtnPath)
 		}
 
-		fmt.Println(depthDiff, path)
 		rtn = append(rtn, rtnPath)
 		return nil
 	})
