@@ -8,74 +8,6 @@ import (
 	"strings"
 )
 
-type options = struct {
-	maxDepth int
-	minDepth int
-	fileOnly bool
-	dirOnly  bool
-	extOnly  string
-	filename bool
-	extsOnly []string
-	relpath  bool
-}
-
-type Option func(*options)
-
-func WithMaxDepth(depth int) Option {
-	return func(opt *options) {
-		opt.maxDepth = depth
-	}
-}
-
-func WithMinDepth(depth int) Option {
-	return func(opt *options) {
-		opt.minDepth = depth
-	}
-}
-
-func WithExactDepth(depth int) Option {
-	return func(opt *options) {
-		opt.maxDepth = depth
-		opt.minDepth = depth
-	}
-}
-
-func WithExtOnly(ext string) Option {
-	return func(opt *options) {
-		opt.extOnly = ext
-	}
-}
-
-func WithExtsOnly(exts []string) Option {
-	return func(opt *options) {
-		opt.extsOnly = exts
-	}
-}
-
-func WithFileOnly() func(*options) {
-	return func(opt *options) {
-		opt.fileOnly = true
-	}
-}
-
-func WithFileName() Option {
-	return func(opt *options) {
-		opt.filename = true
-	}
-}
-
-func WithDirOnly() Option {
-	return func(opt *options) {
-		opt.dirOnly = true
-	}
-}
-
-func WithRelPath() Option {
-	return func(opt *options) {
-		opt.relpath = true
-	}
-}
-
 func Get(dir string, opts ...Option) (*[]string, error) {
 	opt := options{
 		maxDepth: -1,
@@ -118,6 +50,17 @@ func Get(dir string, opts ...Option) (*[]string, error) {
 		}
 		if depthDiff < opt.minDepth {
 			return nil
+		}
+
+		// 実行可能ファイルのみ
+		if opt.executableOnly {
+			info, err := os.Stat(path)
+			if err != nil {
+				return nil
+			}
+			if !isExecutable(info.Mode()) {
+				return nil
+			}
 		}
 
 		// 拡張子
