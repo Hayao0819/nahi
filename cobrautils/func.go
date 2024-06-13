@@ -35,6 +35,39 @@ import "github.com/spf13/cobra"
 // 	}
 // }
 
+// Run
+
+// func WithParentRun(f func(cmd *cobra.Command, args []string)) func(cmd *cobra.Command, args []string) {
+// 	return func(cmd *cobra.Command, args []string) {
+// 		parent := cmd.Parent()
+// 		if parent != nil {
+// 			if parent.Run != nil {
+// 				parent.Run(parent, args)
+// 			}
+// 		}
+
+// 		f(cmd, args)
+// 	}
+// }
+
+// func WithParentRunE(f func(cmd *cobra.Command, args []string) error) func(cmd *cobra.Command, args []string) error {
+// 	return func(cmd *cobra.Command, args []string) error {
+// 		parent := cmd.Parent()
+// 		if parent != nil {
+// 			if parent.RunE != nil {
+// 				err := parent.RunE(parent, args)
+// 				if err != nil {
+// 					return err
+// 				}
+// 			} else if parent.Run != nil {
+// 				parent.Run(parent, args)
+// 			}
+// 		}
+
+// 		return f(cmd, args)
+// 	}
+// }
+
 func WithParentPersistentPreRun(f func(cmd *cobra.Command, args []string)) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		parent := cmd.Parent()
