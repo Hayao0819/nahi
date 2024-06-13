@@ -188,7 +188,7 @@ func (c *cmd) BindSubCmds(r *cobrautils.Registory) *cmd {
 	return c
 }
 
-func (c *cmd) RegisterTo(r *cobrautils.Registory) *cmd {
-	r.RegisterSubCmd(c.Cobra())
-	return c
-}
+// func (c *cmd) RegisterTo(r *cobrautils.Registory) *cmd {
+// 	r.RegisterSubCmd(c.Cobra())
+// 	return c
+// }

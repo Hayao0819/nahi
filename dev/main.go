@@ -3,12 +3,12 @@ package main
 import (
 	"os"
 
-	"github.com/Hayao0819/nahi/cobrautils"
+	cu "github.com/Hayao0819/nahi/cobrautils"
 	"github.com/Hayao0819/nahi/mobra"
 	"github.com/spf13/cobra"
 )
 
-var reg = cobrautils.Registory{}
+var reg = cu.Registory{}
 
 func root() *cobra.Command {
 	root := mobra.New("nahi-dev").
