@@ -15,6 +15,8 @@ type Runner interface {
 
 var ErrNotExecutable = errors.New("not executable")
 
+type NewRunner func(name string, ) Runner
+
 func Execute(r Runner) (*exec.Cmd, error) {
 	if correct, err := r.IsCorrect(); err != nil {
 		return nil, err

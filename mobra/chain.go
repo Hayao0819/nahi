@@ -174,7 +174,7 @@ func (c *cmd) DisableHelpCommand() *cmd {
 
 // utils
 
-func (c *cmd)DisableDefaultCmd() *cmd {
+func (c *cmd) DisableDefaultCmd() *cmd {
 	return c.DisableCompletion().DisableHelpCommand()
 }
 
@@ -184,7 +184,7 @@ func (c *cmd) Cobra() *cobra.Command {
 
 // subcmd
 func (c *cmd) BindSubCmds(r *cobrautils.Registory) *cmd {
-	r.BindSubCmds(c.Cobra())
+	r.Bind(c.Cobra())
 	return c
 }
 

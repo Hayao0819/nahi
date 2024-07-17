@@ -1,5 +1,10 @@
 package srun
 
+import (
+	"os/exec"
+	"path"
+)
+
 type Golang struct {
 	Name  string
 	Path  string
@@ -7,7 +12,23 @@ type Golang struct {
 }
 
 func (g Golang) IsCorrect() (bool, error) {
-	return true, nil
+	return path.Ext(g.Path) == ".go", nil
 }
 
-// TODO: Implement Runner
+func (g Golang) Build(tmp string) error {
+	args := []string{"build",
+		"-o",
+		path.Join(tmp, g.Name),
+	}
+	args = append(args, g.Flags...)
+	args = append(args, "--", g.Path)
+	cmd := exec.Command("go", args...)
+	cmd.Dir = tmp
+
+	return cmd.Run()
+}
+
+func (g Golang) Cmd(tmp string) *exec.Cmd {
+	cmd := exec.Command(path.Join(tmp, g.Name))
+	return cmd
+}

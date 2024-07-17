@@ -50,5 +50,5 @@ func helpTemplateCmd() *cobra.Command {
 }
 
 func init() {
-	reg.RegisterSubCmd(helpTemplateCmd())
+	reg.Add(helpTemplateCmd())
 }
