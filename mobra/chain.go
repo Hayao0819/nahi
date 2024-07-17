@@ -86,6 +86,78 @@ func (c *cmd) Version(version string) *cmd {
 	return c
 }
 
+// Funcs
+
+func (c *cmd) Run(f func(cmd *cobra.Command, args []string)) *cmd {
+	c.cc.Run = f
+	return c
+}
+
+func (c *cmd) RunE(f func(cmd *cobra.Command, args []string) error) *cmd {
+	c.cc.RunE = f
+	return c
+}
+
+func (c *cmd) PreRun(f func(cmd *cobra.Command, args []string)) *cmd {
+	c.cc.PreRun = f
+	return c
+}
+
+func (c *cmd) PreRunE(f func(cmd *cobra.Command, args []string) error) *cmd {
+	c.cc.PreRunE = f
+	return c
+}
+
+func (c *cmd) PersistentPreRun(f func(cmd *cobra.Command, args []string)) *cmd {
+	c.cc.PersistentPreRun = f
+	return c
+}
+
+func (c *cmd) PersistentPreRunE(f func(cmd *cobra.Command, args []string) error) *cmd {
+	c.cc.PersistentPreRunE = f
+	return c
+}
+
+func (c *cmd) PostRun(f func(cmd *cobra.Command, args []string)) *cmd {
+	c.cc.PostRun = f
+	return c
+}
+
+func (c *cmd) PostRunE(f func(cmd *cobra.Command, args []string) error) *cmd {
+	c.cc.PostRunE = f
+	return c
+}
+
+func (c *cmd) PersistentPostRun(f func(cmd *cobra.Command, args []string)) *cmd {
+	c.cc.PersistentPostRun = f
+	return c
+}
+
+func (c *cmd) PersistentPostRunE(f func(cmd *cobra.Command, args []string) error) *cmd {
+	c.cc.PersistentPostRunE = f
+	return c
+}
+
+func (c *cmd) PersistentPreRunWithParent(f func(cmd *cobra.Command, args []string)) *cmd {
+	c.cc.PersistentPreRun = cobrautils.WithParentPersistentPreRun(f)
+	return c
+}
+
+func (c *cmd) PersistentPreRunEWithParent(f func(cmd *cobra.Command, args []string) error) *cmd {
+	c.cc.PersistentPreRunE = cobrautils.WithParentPersistentPreRunE(f)
+	return c
+}
+
+func (c *cmd) PersistentPostRunWithParent(f func(cmd *cobra.Command, args []string)) *cmd {
+	c.cc.PersistentPostRun = cobrautils.WithParentPersistentPostRun(f)
+	return c
+}
+
+func (c *cmd) PersistentPostRunEWithParent(f func(cmd *cobra.Command, args []string) error) *cmd {
+	c.cc.PersistentPostRunE = cobrautils.WithParentPersistentPostRunE(f)
+	return c
+}
+
 // Hidden
 
 func (c *cmd) Hidden(hidden bool) *cmd {
