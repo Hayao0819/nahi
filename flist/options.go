@@ -21,11 +21,11 @@ func WithExactDepth(depth int) Option {
 
 func WithExtOnly(ext string) Option {
 	return func(opt *options) {
-		opt.extOnly = ext
+		opt.extsOnly = append(opt.extsOnly, ext)
 	}
 }
 
-func WithExtsOnly(exts []string) Option {
+func WithExtsOnly(exts ...string) Option {
 	return func(opt *options) {
 		opt.extsOnly = exts
 	}
@@ -40,6 +40,12 @@ func WithFileOnly() func(*options) {
 func WithFileName() Option {
 	return func(opt *options) {
 		opt.filename = true
+	}
+}
+
+func WithFileNamesMatch(name ...string) Option {
+	return func(opt *options) {
+		opt.filenameMatch = append(opt.filenameMatch, name...)
 	}
 }
 

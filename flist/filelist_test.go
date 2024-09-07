@@ -7,14 +7,9 @@ import (
 	"github.com/Hayao0819/nahi/flist"
 )
 
-func handleError(t *testing.T, err error) {
-	if err != nil {
-		t.Errorf("Error: %v", err)
-	}
-}
 
-func TestFileList(t *testing.T) {
-	home, err := os.UserHomeDir()
+func TestAllFileList(t *testing.T) {
+	home, err := os.Getwd()
 	handleError(t, err)
 
 	testcases := []struct {
@@ -30,8 +25,7 @@ func TestFileList(t *testing.T) {
 
 	for _, tc := range testcases {
 		list, err := flist.Get(home, tc.options...)
-		t.Logf("list: %v", list)
+		t.Logf("list: %v", *list)
 		handleError(t, err)
 	}
-
 }

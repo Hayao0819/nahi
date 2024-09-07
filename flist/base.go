@@ -5,8 +5,8 @@ type options = struct {
 	minDepth       int
 	fileOnly       bool
 	dirOnly        bool
-	extOnly        string
 	filename       bool
+	filenameMatch  []string
 	extsOnly       []string
 	relpath        bool
 	executableOnly bool
