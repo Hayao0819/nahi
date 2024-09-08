@@ -8,7 +8,7 @@ import (
 )
 
 
-func TestAllFileList(t *testing.T) {
+func TestFileList(t *testing.T) {
 	home, err := os.Getwd()
 	handleError(t, err)
 

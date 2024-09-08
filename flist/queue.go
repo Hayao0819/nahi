@@ -3,24 +3,27 @@ package flist
 import "sync"
 
 type Queue struct {
+	name string
 	path string
 	opts []Option
 }
 
-func NewQueue(path string, opts ...Option) *Queue {
+func NewQueue(name string, path string, opts ...Option) *Queue {
 	return &Queue{
+		name: name,
 		path: path,
 		opts: opts,
 	}
 }
 
 type getResult struct {
+	name string
 	list *[]string
 	err  error
 }
 
-func GetAll(queues ...Queue) ([]*[]string, []error) {
-	rtn := []*[]string{}
+func GetAll(queues ...Queue) (map[string]*[]string, []error) {
+	rtn := map[string]*[]string{}
 
 	var wg sync.WaitGroup
 	wg.Add(len(queues))
@@ -29,7 +32,7 @@ func GetAll(queues ...Queue) ([]*[]string, []error) {
 		go func(q Queue) {
 			defer wg.Done()
 			list, err := Get(q.path, q.opts...)
-			reses = append(reses, getResult{list: list, err: err})
+			reses = append(reses, getResult{name: q.name, list: list, err: err})
 
 		}(q)
 	}
@@ -40,7 +43,8 @@ func GetAll(queues ...Queue) ([]*[]string, []error) {
 		if r.err != nil {
 			return nil, []error{r.err}
 		}
-		rtn = append(rtn, r.list)
+		// rtn = append(rtn, r.list)
+		rtn[r.name] = r.list
 	}
 
 	return rtn, nil
