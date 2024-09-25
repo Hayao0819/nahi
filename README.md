@@ -10,7 +10,7 @@
 
 ## cputils
 
-[otiai10/copy](github.com/otiai10/copy)で複数のタスクをまとめて実行します。
+[otiai10/copy](https://github.com/otiai10/copy)で複数のタスクをまとめて実行します。
 
 ## flist
 
