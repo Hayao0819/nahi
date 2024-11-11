@@ -1,30 +1,55 @@
-package nahi
+package nconf
 
 import (
-	"strings"
+	"os"
+	"path/filepath"
 
-	"github.com/Hayao0819/nahi/futils"
+	"github.com/go-viper/mapstructure/v2"
 )
 
-func LoadEnvFile(path string) (map[string]string, error) {
-	lines, err := futils.ReadFileLine(path)
-	if err != nil {
-		return nil, err
+func (n *Nconf[T]) AddLoadDir(dirs ...string) {
+	n.dirs = append(n.dirs, dirs...)
+}
+
+func (n *Nconf[T]) AddLoadFile(filenames ...string) {
+	n.filenames = append(n.filenames, filenames...)
+}
+
+func (n *Nconf[T]) files() []string {
+	files := []string{}
+	for _, dir := range n.dirs {
+		for _, filename := range n.filenames {
+			files = append(files, filepath.Join(dir, filename))
+		}
 	}
+	return files
+}
 
-	env := make(map[string]string)
-
-	for _, line := range lines {
-		if strings.HasPrefix(line, "#") || !strings.Contains(line, "=") {
-			continue
+func (n *Nconf[T]) Load() error {
+	merged := map[string]string{}
+	for _, file := range n.files() {
+		f, err := os.Open(file)
+		if err != nil {
+			return err
 		}
 
-		parts := strings.SplitN(line, "=", 2)
-		value := strings.TrimPrefix(parts[1], "\"")
-		value = strings.TrimSuffix(value, "\"")
-		env[parts[0]] = value
+		d, err := parseKeyValue(f)
+		if err != nil {
+			return err
+		}
+
+		for k, v := range d {
+			merged[k] = v
+		}
+
+		f.Close()
 	}
 
-	return env, nil
+	// map[string]stringをいい感じにTに変換する
+	if err := mapstructure.Decode(merged, &n.data); err != nil {
+		return err
+	}
 
+	n.loaded = true
+	return nil
 }

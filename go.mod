@@ -4,6 +4,7 @@ go 1.23.1
 
 require (
 	github.com/cockroachdb/errors v1.11.3
+	github.com/go-viper/mapstructure/v2 v2.2.1
 	github.com/otiai10/copy v1.14.0
 	github.com/samber/lo v1.47.0
 	github.com/spf13/cobra v1.8.1

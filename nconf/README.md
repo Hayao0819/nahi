@@ -1,1 +1,5 @@
-# Nahi config utils
+# Nahi config loader
+
+暇なときに作る設定ファイルローダー
+
+シェルの構文解析とジェネリクスでいい感じにしたい
